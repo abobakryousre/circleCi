@@ -2,20 +2,16 @@ version: 2.1
 
 jobs:
   print_hello:
-    environment:
-      - message: Hello
     docker:
       - image: circleCi/node:13.8.0
     steps:
-    - run: echo $message
+    - run: echo hello
 
   print_world:
-    environment:
-      - message: World
     docker:
       - image: circleCi/node:13.8.0
     steps:
-      - run: echo $message
+      - run: echo world
 
 
 workflows:
