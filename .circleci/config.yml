@@ -25,16 +25,30 @@ jobs:
     steps:
       - run: echo my name is $MY_NAME
 
+  save_print_helloworled:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run: echo Hello Worled! >> output.txt
+      - presit_to_workspace:
+        root: /tmp/workspace
+        paths:
+          - output.txt
 
+  load_print_helloworled:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - attach_workspace:
+        at: /tmp/workspace
+      - run: cat output.txt
 workflows:
   Main:
     jobs:
-      - print_hello
-      - print_world:
-          requires:
-            - print_hello
-      - print_my_name:
-          requires: [print_world]
+      - save_print_helloworled
+      - load_print_helloworled:
+        requires:
+          - save_print_helloworled
 
 
 
