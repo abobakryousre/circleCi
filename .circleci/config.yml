@@ -1,5 +1,8 @@
 version: 2.1
 
+default_docker_image: &default_docker_image
+  docker:
+    - image: cimg/base:stable
 
 jobs:
   print_hello:
@@ -42,6 +45,8 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: cat ~/output.txt
+
+
 workflows:
   Main:
     jobs:
