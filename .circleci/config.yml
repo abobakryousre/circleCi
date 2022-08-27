@@ -4,6 +4,11 @@ default_docker_image: &default_docker_image
   docker:
     - image: cimg/base:stable
 
+commands:
+  print_workflow_id:
+    description: this command to print the current worklfow id
+    steps:
+      - run: echo $CIRCLE_WORKFLOW_ID
 jobs:
   print_hello:
     environment:
@@ -46,14 +51,14 @@ jobs:
           at: ~/
       - run: cat ~/output.txt
 
-
+  test_commands:
+    <<: *default_docker_image
+    steps:
+      - print_workflow_id
 workflows:
   Main:
     jobs:
-      - save_print_helloworled
-      - load_print_helloworled:
-          requires:
-            - save_print_helloworled
+      - test_commands
 
 
 
