@@ -55,10 +55,19 @@ jobs:
     <<: *default_docker
     steps:
       - print_workflow_id
+
+  test_on_fail:
+    <<: *default_docker
+    steps:
+      - run: return 1
+      - run:
+          name: print failure message
+          command: echo "the previous job failed!!!!"
+          when: on_fail
 workflows:
   Main:
     jobs:
-      - test_commands
+      - test_on_fail
 
 
 
