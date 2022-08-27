@@ -1,16 +1,17 @@
 version: 2.1
 
-environment:
-  hello_message: Hello
+
 jobs:
   print_hello:
+    environment:
+      hello_message: Hello
     docker:
       - image: circleci/node:13.8.0
     steps:
     - run: 
       name: prining hello
       command: |
-        echo $hello_message
+        echo hello
 
   print_world:
     docker:
