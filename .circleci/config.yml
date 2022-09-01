@@ -31,7 +31,7 @@ jobs:
 
         
       - save_cache:
-          key: ansible-inventory-{{ .BuildNum }}
+          key: ansible-inventory-$CIRCLE_WORKFLOW_ID
           paths:
             - inventory.txt
 
@@ -44,7 +44,7 @@ jobs:
           fingerprints: [0b:47:3a:2c:65:79:a0:33:cf:0d:97:3b:05:b1:a3:05]
       - restore_cache:
           keys:
-            - ansible-inventory-{{ .BuildNum }}
+            - ansible-inventory-$CIRCLE_WORKFLOW_ID
       - run:
           name: list all files
           command: ls
