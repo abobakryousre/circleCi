@@ -25,6 +25,11 @@ jobs:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text >> inventory.txt
       
+      - run:
+          name: print the ec2 public ip
+          command: cat inventory.txt
+
+        
       - save_cache:
           key: ansible-inventory
           paths:
@@ -43,7 +48,7 @@ jobs:
       - run:
           name: list all files
           command: ls
-           
+
       - run:
           name: install ansible
           command: |
