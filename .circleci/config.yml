@@ -16,14 +16,14 @@ jobs:
       - run:
           name: append ec2 hostname to inventory file for ansible 
           command: |
-            echo "[all]" > inventory
+            echo "[all]" > inventory.txt
 
       - run:
           name: append ec2 hostname to inventory file for ansible 
           command: |
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text >> inventory
+            --output text >> inventory.txt
 
   configure_infrastrucre:
     docker:
@@ -32,6 +32,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: [0b:47:3a:2c:65:79:a0:33:cf:0d:97:3b:05:b1:a3:05]
+      - run: ls 
       - run:
           name: install ansible
           command: |
@@ -39,7 +40,7 @@ jobs:
       - run:
           name: configure ec2 server
           command: |
-            ansible-playbook -i inventory playbook.yml
+            ansible-playbook -i inventory.txt playbook.yml
 workflows:
   Main:
     jobs:
