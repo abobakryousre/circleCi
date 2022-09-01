@@ -28,7 +28,7 @@
 - name: create directory
   file:
     path: ~/web
-    state: direcotry
+    state: directory
 
 - name: copy index.js to ~/web directory
   copy:
