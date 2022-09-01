@@ -5,20 +5,21 @@ jobs:
   create_infrastructure:
     docker:
       - image: amazon/aws-cli
-      
+
     steps:
       - checkout
       - run:
           name: create cloud formation stack
           command: |
             aws cloudformation deploy --template-file template.yml  --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} 
-     
-     - run:
-          name: create inventory file
+
+      - run:
+          name: append ec2 hostname to inventory file for ansible 
           command: |
             echo "[all]" > inventory
+
       - run:
-          name: append ec2 hostname to inventory.txt file for ansible 
+          name: append ec2 hostname to inventory file for ansible 
           command: |
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
