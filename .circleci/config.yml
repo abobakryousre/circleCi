@@ -10,12 +10,40 @@ jobs:
           name: create cloud formation stack
           command: |
             aws cloudformation deploy --template-file template.yml  --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} 
+     
+     - run:
+          name: create inventory file
+          command: |
+            echo "[hosts]" > inventory
+      - run:
+          name: append ec2 hostname to inventory.txt file for ansible 
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text >> inventory
 
-
+  configure_infrastrucre:
+    dokcer:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: [0b:47:3a:2c:65:79:a0:33:cf:0d:97:3b:05:b1:a3:05]
+      - run:
+          name: install ansible
+          command: |
+            apk add --update ansible
+      - run:
+          name: configure ec2 server
+          command: |
+            ansible-playbook -i inventory playbook.yml
 workflows:
   Main:
     jobs:
       - create_infrastructure
+      - configure_infrastrucre:
+          requires:
+            - create_infrastructure
 
 
 
