@@ -1,73 +1,23 @@
 version: 2.1
 
-default_docker_image: &default_docker
-  docker:
-    - image: cimg/base:stable
-
-commands:
-  print_workflow_id:
-    description: this command to print the current worklfow id
-    steps:
-      - run: echo $CIRCLE_WORKFLOW_ID
 jobs:
-  print_hello:
-    environment:
-      hello_message: Hello
+
+  create_infrastructure:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
-    - run:
-        name: printing hello
-        command: |
-          echo $hello_message
-
-  print_world:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - run: echo world
-
-  print_my_name:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - run: echo my name is $MY_NAME
-
-  save_print_helloworled:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - run: echo Hello Worled! >> ~/output.txt
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - output.txt
-
-  load_print_helloworled:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run: cat ~/output.txt
-
-  test_commands:
-    <<: *default_docker
-    steps:
-      - print_workflow_id
-
-  test_on_fail:
-    <<: *default_docker
-    steps:
-      - run: return 1
+      - checkout
       - run:
-          name: print failure message
-          command: echo "the previous job failed!!!!"
-          when: on_fail
+          name: create cloud formation stack
+          command: |
+          aws cloudformation deploy \
+            --template-file template.yml \
+            --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
+  
 workflows:
   Main:
     jobs:
-      - test_on_fail
+      - create_infrastructure
 
 
 
