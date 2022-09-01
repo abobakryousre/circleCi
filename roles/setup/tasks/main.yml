@@ -1,0 +1,40 @@
+- name: "update apt packages."
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
+- name: remove dependencies that no longer needed
+  become: yes
+  apt:
+    autoremove: yes
+
+- name: install nodejs npm
+  apt:
+    name: [nodejs, npm]
+    state: latest
+    update_cach: yes
+
+- name: install pm2
+  npm:
+    name: pm2
+    global: yes
+    state: present
+
+- name: create directory
+  file:
+    path: ~/web
+    state: direcotry
+
+- name: copy index.js to ~/web directory
+  copy:
+    src: files/index.js
+    dest: ~/web
+
+- name: run http server
+  shell: |
+    pm2 start ~/web/index.js -f

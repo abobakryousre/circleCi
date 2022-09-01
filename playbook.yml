@@ -1,0 +1,8 @@
+- name: set up a web server on ec2
+  hosts: all
+  user: ubuntu
+  become: true
+  become_method: sudo
+  become_user: root
+  roles:
+    - setup
